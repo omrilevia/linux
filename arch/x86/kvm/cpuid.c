@@ -1132,13 +1132,25 @@ EXPORT_SYMBOL_GPL(kvm_cpuid);
 int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 {
 	u32 eax, ebx, ecx, edx;
-
+	static sig_atomic_t counter = 0;
+	long long cycles = 0;
+	long long before = rdtsc();
+	long long after;
 	if (cpuid_fault_enabled(vcpu) && !kvm_require_cpl(vcpu, 0))
 		return 1;
-
+	
 	eax = kvm_rax_read(vcpu);
 	ecx = kvm_rcx_read(vcpu);
-	kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx, false);
+
+	if(eax == 0x4fffffff){
+		counter++;
+		after = rdtsc();
+		cycles += after - before;
+		printk(KERN INFO "Cycles: %llu, Number of exits: %d", cycles, counter);
+	}
+	else
+		kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx, false);
+	
 	kvm_rax_write(vcpu, eax);
 	kvm_rbx_write(vcpu, ebx);
 	kvm_rcx_write(vcpu, ecx);
