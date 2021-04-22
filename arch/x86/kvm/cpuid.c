@@ -1134,6 +1134,7 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 	long long before = rdtsc();
 	u32 eax, ebx, ecx, edx;
 	static int counter = 0;
+	counter++;
 	long long cycles = 0;
 	long long after;
 	if (cpuid_fault_enabled(vcpu) && !kvm_require_cpl(vcpu, 0))
@@ -1143,11 +1144,17 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 	ecx = kvm_rcx_read(vcpu);
 
 	if(eax == 0x4fffffff){
-		counter++;
+		
 		printk(KERN_INFO "Cycles: %llu, Number of exits: %d", cycles, counter);
 		// write counter to eax
+		eax = counter;
+		
 		// write high 32 bits of cycles into ebx
+		ebx = cycles << 32;
+		
 		// write low 32 bits of cycles into ecx
+		ecx = cycles >> 32;
+		
 	}
 	else
 		kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx, false);
