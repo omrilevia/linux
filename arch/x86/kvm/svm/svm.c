@@ -3343,13 +3343,26 @@ static void svm_get_exit_info(struct kvm_vcpu *vcpu, u64 *info1, u64 *info2,
 	else
 		*error_code = 0;
 }
+/*
+ * Exit handler function
+ * Add atomic_t counter to count num_exits
+ * Add atomic_64 to count cpu cycles
+ * Extern both variables 
+ */
+extern atomic_t exit_counter;
+extern atomic64_t cycles_spent_exiting;
+
 
 static int handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 {
+	uint64_t before = rdtsc();
 	struct vcpu_svm *svm = to_svm(vcpu);
 	struct kvm_run *kvm_run = vcpu->run;
+	int return_val;
+	uint64_t after;
+	
 	u32 exit_code = svm->vmcb->control.exit_code;
-
+	atomic_inc(&exit_counter);
 	trace_kvm_exit(exit_code, vcpu, KVM_ISA_SVM);
 
 	/* SEV-ES guests must use the CR write traps to track CR registers. */
@@ -3395,7 +3408,12 @@ static int handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 	if (exit_fastpath != EXIT_FASTPATH_NONE)
 		return 1;
 
-	return svm_invoke_exit_handler(svm, exit_code);
+	return_val = svm_invoke_exit_handler(svm, exit_code);
+	after = rdtsc();
+	
+	atomic64_fetch_add(after-before, &cycles_spent_exiting);
+	return return_val;
+	
 }
 
 static void reload_tss(struct kvm_vcpu *vcpu)

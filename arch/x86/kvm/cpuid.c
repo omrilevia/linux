@@ -1128,16 +1128,18 @@ bool kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx,
 	return exact;
 }
 EXPORT_SYMBOL_GPL(kvm_cpuid);
+atomic_t exit_counter = ATOMIC_INIT(0);
+atomic64_t cycles_spent_exiting = ATOMIC_INIT(0);
+EXPORT_SYMBOL(exit_counter);
+EXPORT_SYMBOL(cycles_spent_exiting);
 
 int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 {
-	static int counter = 0;
-	long before = rdtsc();
+	
 	u32 eax, ebx, ecx, edx;
-	static long cycles = 0;
-	long after;
+	uint64_t cycles;
 
-	counter++;
+	
 	if (cpuid_fault_enabled(vcpu) && !kvm_require_cpl(vcpu, 0))
 		return 1;
 	
@@ -1145,16 +1147,16 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 	ecx = kvm_rcx_read(vcpu);
 
 	if(eax == 0x4fffffff){
-		
-		printk(KERN_INFO "Cycles: %lu, Number of exits: %d", cycles, counter);
-		// write counter to eax
-		eax = counter;
+		eax = atomic_read(&exit_counter);
+		cycles = atomic64_read(&cycles_spent_exiting);
+		printk(KERN_INFO "Number of exits: %u, Cycles spent exiting: %llu", eax, cycles);
 		
 		// write high 32 bits of cycles into ebx
-		ebx = cycles << 32;
+		ebx = (u32)(cycles >> 32);
 		
 		// write low 32 bits of cycles into ecx
-		ecx = cycles >> 32;
+		ecx = (u32)cycles;
+		printk(KERN_INFO "high bits: %u, low bits: %u", ebx, ecx);
 		
 	}
 	else
@@ -1165,8 +1167,8 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 	kvm_rcx_write(vcpu, ecx);
 	kvm_rdx_write(vcpu, edx);
 
-	after = rdtsc();
-	cycles += after - before;
+	//after = rdtsc();
+	//cycles += after - before;
 
 	return kvm_skip_emulated_instruction(vcpu);
 }
