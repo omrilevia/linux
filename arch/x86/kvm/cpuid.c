@@ -1130,6 +1130,155 @@ bool kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx,
 EXPORT_SYMBOL_GPL(kvm_cpuid);
 atomic_t exit_counter = ATOMIC_INIT(0);
 atomic64_t cycles_spent_exiting = ATOMIC_INIT(0);
+
+/* Define counters for each exit code*/
+atomic_t SVM_EXIT_READ_CR0_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_READ_CR3_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_READ_CR4_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_READ_CR8_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_CR0_SEL_WRITE_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_WRITE_CR0_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_WRITE_CR3_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_WRITE_CR4_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_WRITE_CR8_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_READ_DR0_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_READ_DR1_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_READ_DR2_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_READ_DR3_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_READ_DR4_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_READ_DR5_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_READ_DR6_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_READ_DR7_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_WRITE_DR0_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_WRITE_DR1_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_WRITE_DR2_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_WRITE_DR3_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_WRITE_DR4_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_WRITE_DR5_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_WRITE_DR6_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_WRITE_DR7_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_EXCP_BASEDB_VECTOR_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_EXCP_BASEBP_VECTOR_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_EXCP_BASEUD_VECTOR_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_EXCP_BASEPF_VECTOR_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_EXCP_BASEMC_VECTOR_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_EXCP_BASEAC_VECTOR_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_EXCP_BASEGP_VECTOR_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_INTR_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_NMI_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_SMI_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_INIT_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_VINTR_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_RDPMC_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_CPUID_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_IRET_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_INVD_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_PAUSE_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_HLT_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_INVLPG_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_INVLPGA_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_IOIO_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_MSR_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_TASK_SWITCH_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_SHUTDOWN_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_VMRUN_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_VMMCALL_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_VMLOAD_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_VMSAVE_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_STGI_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_CLGI_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_SKINIT_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_WBINVD_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_MONITOR_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_MWAIT_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_XSETBV_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_RDPRU_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_EFER_WRITE_TRAP_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_CR0_WRITE_TRAP_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_CR4_WRITE_TRAP_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_CR8_WRITE_TRAP_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_INVPCID_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_NPF_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_RSM_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_AVIC_INCOMPLETE_IPI_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_AVIC_UNACCELERATED_ACCESS_counter = ATOMIC_INIT(0);
+atomic_t SVM_EXIT_VMGEXIT_counter = ATOMIC_INIT(0);
+
+EXPORT_SYMBOL(SVM_EXIT_READ_CR0_counter);
+EXPORT_SYMBOL(SVM_EXIT_READ_CR3_counter);
+EXPORT_SYMBOL(SVM_EXIT_READ_CR4_counter);
+EXPORT_SYMBOL(SVM_EXIT_READ_CR8_counter);
+EXPORT_SYMBOL(SVM_EXIT_CR0_SEL_WRITE_counter);
+EXPORT_SYMBOL(SVM_EXIT_WRITE_CR0_counter);
+EXPORT_SYMBOL(SVM_EXIT_WRITE_CR3_counter);
+EXPORT_SYMBOL(SVM_EXIT_WRITE_CR4_counter);
+EXPORT_SYMBOL(SVM_EXIT_WRITE_CR8_counter);
+EXPORT_SYMBOL(SVM_EXIT_READ_DR0_counter);
+EXPORT_SYMBOL(SVM_EXIT_READ_DR1_counter);
+EXPORT_SYMBOL(SVM_EXIT_READ_DR2_counter);
+EXPORT_SYMBOL(SVM_EXIT_READ_DR3_counter);
+EXPORT_SYMBOL(SVM_EXIT_READ_DR4_counter);
+EXPORT_SYMBOL(SVM_EXIT_READ_DR5_counter);
+EXPORT_SYMBOL(SVM_EXIT_READ_DR6_counter);
+EXPORT_SYMBOL(SVM_EXIT_READ_DR7_counter);
+EXPORT_SYMBOL(SVM_EXIT_WRITE_DR0_counter);
+EXPORT_SYMBOL(SVM_EXIT_WRITE_DR1_counter);
+EXPORT_SYMBOL(SVM_EXIT_WRITE_DR2_counter);
+EXPORT_SYMBOL(SVM_EXIT_WRITE_DR3_counter);
+EXPORT_SYMBOL(SVM_EXIT_WRITE_DR4_counter);
+EXPORT_SYMBOL(SVM_EXIT_WRITE_DR5_counter);
+EXPORT_SYMBOL(SVM_EXIT_WRITE_DR6_counter);
+EXPORT_SYMBOL(SVM_EXIT_WRITE_DR7_counter);
+EXPORT_SYMBOL(SVM_EXIT_EXCP_BASEDB_VECTOR_counter);
+EXPORT_SYMBOL(SVM_EXIT_EXCP_BASEBP_VECTOR_counter);
+EXPORT_SYMBOL(SVM_EXIT_EXCP_BASEUD_VECTOR_counter);
+EXPORT_SYMBOL(SVM_EXIT_EXCP_BASEPF_VECTOR_counter);
+EXPORT_SYMBOL(SVM_EXIT_EXCP_BASEMC_VECTOR_counter);
+EXPORT_SYMBOL(SVM_EXIT_EXCP_BASEAC_VECTOR_counter);
+EXPORT_SYMBOL(SVM_EXIT_EXCP_BASEGP_VECTOR_counter);
+EXPORT_SYMBOL(SVM_EXIT_INTR_counter);
+EXPORT_SYMBOL(SVM_EXIT_NMI_counter);
+EXPORT_SYMBOL(SVM_EXIT_SMI_counter);
+EXPORT_SYMBOL(SVM_EXIT_INIT_counter);
+EXPORT_SYMBOL(SVM_EXIT_VINTR_counter);
+EXPORT_SYMBOL(SVM_EXIT_RDPMC_counter);
+EXPORT_SYMBOL(SVM_EXIT_CPUID_counter);
+EXPORT_SYMBOL(SVM_EXIT_IRET_counter);
+EXPORT_SYMBOL(SVM_EXIT_INVD_counter);
+EXPORT_SYMBOL(SVM_EXIT_PAUSE_counter);
+EXPORT_SYMBOL(SVM_EXIT_HLT_counter);
+EXPORT_SYMBOL(SVM_EXIT_INVLPG_counter);
+EXPORT_SYMBOL(SVM_EXIT_INVLPGA_counter);
+EXPORT_SYMBOL(SVM_EXIT_IOIO_counter);
+EXPORT_SYMBOL(SVM_EXIT_MSR_counter);
+EXPORT_SYMBOL(SVM_EXIT_TASK_SWITCH_counter);
+EXPORT_SYMBOL(SVM_EXIT_SHUTDOWN_counter);
+EXPORT_SYMBOL(SVM_EXIT_VMRUN_counter);
+EXPORT_SYMBOL(SVM_EXIT_VMMCALL_counter);
+EXPORT_SYMBOL(SVM_EXIT_VMLOAD_counter);
+EXPORT_SYMBOL(SVM_EXIT_VMSAVE_counter);
+EXPORT_SYMBOL(SVM_EXIT_STGI_counter);
+EXPORT_SYMBOL(SVM_EXIT_CLGI_counter);
+EXPORT_SYMBOL(SVM_EXIT_SKINIT_counter);
+EXPORT_SYMBOL(SVM_EXIT_WBINVD_counter);
+EXPORT_SYMBOL(SVM_EXIT_MWAIT_counter);
+EXPORT_SYMBOL(SVM_EXIT_XSETBV_counter);
+EXPORT_SYMBOL(SVM_EXIT_RDPRU_counter);
+EXPORT_SYMBOL(SVM_EXIT_EFER_WRITE_TRAP_counter);
+EXPORT_SYMBOL(SVM_EXIT_CR0_WRITE_TRAP_counter);
+EXPORT_SYMBOL(SVM_EXIT_CR4_WRITE_TRAP_counter);
+EXPORT_SYMBOL(SVM_EXIT_CR8_WRITE_TRAP_counter);
+EXPORT_SYMBOL(SVM_EXIT_INVPCID_counter);
+EXPORT_SYMBOL(SVM_EXIT_NPF_counter);
+EXPORT_SYMBOL(SVM_EXIT_RSM_counter);
+EXPORT_SYMBOL(SVM_EXIT_AVIC_INCOMPLETE_IPI_counter);
+EXPORT_SYMBOL(SVM_EXIT_AVIC_UNACCELERATED_ACCESS_counter);
+EXPORT_SYMBOL(SVM_EXIT_VMGEXIT_counter);
+EXPORT_SYMBOL(SVM_EXIT_MONITOR_counter);
+
+
+
+
 EXPORT_SYMBOL(exit_counter);
 EXPORT_SYMBOL(cycles_spent_exiting);
 
@@ -1159,6 +1308,239 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 		printk(KERN_INFO "high bits: %u, low bits: %u", ebx, ecx);
 		
 	}
+	
+	else if(eax == 0x4ffffffe){
+	
+		if((ecx >= 0 && ecx < 0xA5) ||  (ecx > 0x3FF && ecx < 0x404)){
+			switch(ecx){
+			case 0:
+				eax = atomic_read(&SVM_EXIT_READ_CR0_counter);
+				break;
+			case 3:
+				eax = atomic_read(&SVM_EXIT_READ_CR3_counter);
+				break;
+			case 4:
+				eax = atomic_read(&SVM_EXIT_READ_CR4_counter);
+				break;
+			case 8:
+				eax = atomic_read(&SVM_EXIT_READ_CR8_counter);
+				break;
+			case 101:
+				eax = atomic_read(&SVM_EXIT_CR0_SEL_WRITE_counter);
+				break;
+			case 16:
+				eax = atomic_read(&SVM_EXIT_WRITE_CR0_counter);
+				break;
+			case 19:
+				eax = atomic_read(&SVM_EXIT_WRITE_CR3_counter);
+				break;
+			case 20:
+				eax = atomic_read(&SVM_EXIT_WRITE_CR4_counter);
+				break;
+			case 24:
+				eax = atomic_read(&SVM_EXIT_WRITE_CR8_counter);
+				break;
+			case 32:
+				eax = atomic_read(&SVM_EXIT_READ_DR0_counter);
+				break;
+			case 33:
+				eax = atomic_read(&SVM_EXIT_READ_DR1_counter);
+				break;
+			case 34:
+				eax = atomic_read(&SVM_EXIT_READ_DR2_counter);
+				break;
+			case 35:
+				eax = atomic_read(&SVM_EXIT_READ_DR3_counter);
+				break;
+			case 36:
+				eax = atomic_read(&SVM_EXIT_READ_DR4_counter);
+				break;
+			case 37:
+				eax = atomic_read(&SVM_EXIT_READ_DR5_counter);
+				break;
+			case 38:
+				eax = atomic_read(&SVM_EXIT_READ_DR6_counter);
+				break;
+			case 39:
+				eax = atomic_read(&SVM_EXIT_READ_DR7_counter);
+				break;
+			case 48:
+				eax = atomic_read(&SVM_EXIT_WRITE_DR0_counter);
+				break;
+			case 49:
+				eax = atomic_read(&SVM_EXIT_WRITE_DR1_counter);
+				break;
+			case 50:
+				eax = atomic_read(&SVM_EXIT_WRITE_DR2_counter);
+				break;
+				
+			case 51:
+				eax = atomic_read(&SVM_EXIT_WRITE_DR3_counter);
+				break;
+			case 52:
+				eax = atomic_read(&SVM_EXIT_WRITE_DR4_counter);
+				break;
+			case 53:
+				eax = atomic_read(&SVM_EXIT_WRITE_DR5_counter);
+				break;
+			case 54:
+				eax = atomic_read(&SVM_EXIT_WRITE_DR6_counter);
+				break;
+			case 55:
+				eax = atomic_read(&SVM_EXIT_WRITE_DR7_counter);
+				break;
+			case 65:
+				eax = atomic_read(&SVM_EXIT_EXCP_BASEDB_VECTOR_counter);
+				break;
+			case 67:
+				eax = atomic_read(&SVM_EXIT_EXCP_BASEBP_VECTOR_counter);
+				break;
+			case 70:
+				eax = atomic_read(&SVM_EXIT_EXCP_BASEUD_VECTOR_counter);
+				break;
+			case 78:
+				eax = atomic_read(&SVM_EXIT_EXCP_BASEPF_VECTOR_counter);
+				break;
+				
+			case 82:
+				eax = atomic_read(&SVM_EXIT_EXCP_BASEMC_VECTOR_counter);
+				break;
+			case 81:
+				eax = atomic_read(&SVM_EXIT_EXCP_BASEAC_VECTOR_counter);
+				break;
+			case 77:
+				eax = atomic_read(&SVM_EXIT_EXCP_BASEGP_VECTOR_counter);
+				break;
+			case 96:
+				eax = atomic_read(&SVM_EXIT_INTR_counter);
+				break;
+			case 97:
+				eax = atomic_read(&SVM_EXIT_NMI_counter);
+				break;
+			case 98:
+				eax = atomic_read(&SVM_EXIT_SMI_counter);
+				break;
+			case 99:
+				eax = atomic_read(&SVM_EXIT_INIT_counter);
+				break;
+			case 100:
+				eax = atomic_read(&SVM_EXIT_VINTR_counter);
+				break;
+			case 111:
+				eax = atomic_read(&SVM_EXIT_RDPMC_counter);
+				break;
+			case 114:
+				eax = atomic_read(&SVM_EXIT_CPUID_counter);
+				break;
+			case 116:
+				eax = atomic_read(&SVM_EXIT_IRET_counter);
+				break;
+			case 118:
+				eax = atomic_read(&SVM_EXIT_INVD_counter);
+				break;
+			case 119:
+				eax = atomic_read(&SVM_EXIT_PAUSE_counter);
+				break;
+			case 120:
+				eax = atomic_read(&SVM_EXIT_HLT_counter);
+				break;
+			case 121:
+				eax = atomic_read(&SVM_EXIT_INVLPG_counter);
+				break;
+			case 122:
+				eax = atomic_read(&SVM_EXIT_INVLPGA_counter);
+				break;
+			case 123:
+				eax = atomic_read(&SVM_EXIT_IOIO_counter);
+				break;
+			case 124:
+				eax = atomic_read(&SVM_EXIT_MSR_counter);
+				break;
+			case 125:
+				eax = atomic_read(&SVM_EXIT_TASK_SWITCH_counter);
+				break;
+			case 127:
+				eax = atomic_read(&SVM_EXIT_SHUTDOWN_counter);
+				break;
+			case 128:
+				eax = atomic_read(&SVM_EXIT_VMRUN_counter);
+				break;
+			case 129:
+				eax = atomic_read(&SVM_EXIT_VMMCALL_counter);
+				break;
+			case 130:
+				eax = atomic_read(&SVM_EXIT_VMLOAD_counter);
+				break;
+			case 131:
+				eax = atomic_read(&SVM_EXIT_VMSAVE_counter);
+				break;
+			case 132:
+				eax = atomic_read(&SVM_EXIT_STGI_counter);
+				break;
+			case 133:
+				eax = atomic_read(&SVM_EXIT_CLGI_counter);
+				break;
+			case 134:
+				eax = atomic_read(&SVM_EXIT_SKINIT_counter);
+				break;
+			case 137:
+				eax = atomic_read(&SVM_EXIT_WBINVD_counter);
+				break;
+			case 138:
+				eax = atomic_read(&SVM_EXIT_MONITOR_counter);
+				break;
+			case 139:
+				eax = atomic_read(&SVM_EXIT_MWAIT_counter);
+				break;
+			case 141:
+				eax = atomic_read(&SVM_EXIT_XSETBV_counter);
+				break;
+			case 142:
+				eax = atomic_read(&SVM_EXIT_RDPRU_counter);
+				break;
+			case 143:
+				eax = atomic_read(&SVM_EXIT_EFER_WRITE_TRAP_counter);
+				break;
+			case 144:
+				eax = atomic_read(&SVM_EXIT_CR0_WRITE_TRAP_counter);
+				break;
+			case 148:
+				eax = atomic_read(&SVM_EXIT_CR4_WRITE_TRAP_counter);
+				break;
+			case 152:
+				eax = atomic_read(&SVM_EXIT_CR8_WRITE_TRAP_counter);
+				break;
+			case 162:
+				eax = atomic_read(&SVM_EXIT_INVPCID_counter);
+				break;
+			case 1024:
+				eax = atomic_read(&SVM_EXIT_NPF_counter);
+				break;
+			case 115:
+				eax = atomic_read(&SVM_EXIT_RSM_counter);
+				break;
+			case 1025:
+				eax = atomic_read(&SVM_EXIT_AVIC_INCOMPLETE_IPI_counter);
+				break;
+			case 1026:
+				eax = atomic_read(&SVM_EXIT_AVIC_UNACCELERATED_ACCESS_counter);
+				break;
+			case 1027:
+				eax = atomic_read(&SVM_EXIT_VMGEXIT_counter);
+				break;
+			default:
+				eax = ebx = ecx = edx = 0;
+				}
+		}
+		else{
+			eax = ebx = ecx = 0;
+			edx = 0xffffffff;
+		}
+	
+	
+	
+	}
+	
 	else
 		kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx, false);
 	
