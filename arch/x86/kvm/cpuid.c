@@ -1310,8 +1310,11 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 	}
 	
 	else if(eax == 0x4ffffffe){
-	
+		printk(KERN_INFO "EAX (0x4FFFFFFE)\n");
+		printk(KERN_INFO "ECX(dec): %u\n", ecx);
+		printk(KERN_INFO "ECX(hex): %x\n", ecx);
 		if((ecx >= 0 && ecx < 0xA5) ||  (ecx > 0x3FF && ecx < 0x404)){
+		printk(KERN_INFO "FOUND VALID ECX\n");
 			switch(ecx){
 			case 0:
 				eax = atomic_read(&SVM_EXIT_READ_CR0_counter);
@@ -1529,6 +1532,7 @@ int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 				eax = atomic_read(&SVM_EXIT_VMGEXIT_counter);
 				break;
 			default:
+			printk(KERN_INFO "UNSUPPORTED EXIT CODE, SETTING REGISTERS TO 0\n");
 				eax = ebx = ecx = edx = 0;
 				}
 		}
